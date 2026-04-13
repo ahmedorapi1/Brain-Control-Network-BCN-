@@ -30,9 +30,9 @@ class SpatialAttention(nn.Module):
         return out
 
 
-class EEG_Temporal_Attention(nn.Module):
+class EEG_MODEL(nn.Module):
     def __init__(self,
-                 num_classes=16,
+                 num_classes=5,
                  channels=64,
                  F1=8,
                  kernelLength=64,
@@ -78,4 +78,4 @@ class EEG_Temporal_Attention(nn.Module):
 
         x = self.fc(x)
 
-        return F.softmax(x, dim=1)
+        return x
