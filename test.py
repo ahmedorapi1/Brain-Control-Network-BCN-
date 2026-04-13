@@ -13,6 +13,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 model = EEG_MODEL()
 model.load_state_dict(torch.load("eegnet.pth"))
+model.to(device)
 model.eval()
 
 
@@ -33,6 +34,8 @@ test_dataset = EEGDataset(x_test, y_test)
 test_loader = DataLoader(test_dataset, batch_size=32, shuffle=True)
 
 
+all_preds = []
+all_labels = []
 
 correct = 0
 total = 0
@@ -48,8 +51,12 @@ with torch.no_grad():
         total += y_batch.size(0)
         correct += (pred == y_batch).sum().item()
 
-cm(y_batch, pred)
+        all_preds.extend(pred.cpu().numpy())
+        all_labels.extend(y_batch.cpu().numpy())
+
 print("Accuracy:", correct / total)
+
+cm(all_labels, all_preds)  
 
 
 def cm(y_true, y_pred):
