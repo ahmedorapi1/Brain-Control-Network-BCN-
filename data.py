@@ -1,54 +1,45 @@
-import scipy.io as sio
 import numpy as np
 import torch
 from torch.utils.data import Dataset
-from scipy.signal import butter, lfilter
+from scipy.signal import butter, filtfilt
+from sklearn.preprocessing import LabelEncoder
 
 
-def bandpass_filter(signal, low=1, high=40, fs=128, order=5):
+def bandpass_filter(signal, low=1, high=40, fs=250, order=5):
     nyq = 0.5 * fs
     low = low / nyq
     high = high / nyq
 
     b, a = butter(order, [low, high], btype='band')
-    return lfilter(b, a, signal)
-
-
-def normalize(signal):
-    return (signal - np.mean(signal)) / np.std(signal)
+    return filtfilt(b, a, signal)
 
 
 class EEGDataset(Dataset):
-    def __init__(self, x, y, fs=256):
-        self.x = x
-        self.y = y
+    def __init__(self, x, y, fs=250):
         self.fs = fs
 
-    def preprocess(self, signal):
-        processed = np.zeros_like(signal)
+        self.x = self.preprocess_all(x)
 
-        for ch in range(signal.shape[0]):
-            x = signal[ch]
+        # labels -> tensor
+        self.y = torch.tensor(y, dtype=torch.long)
 
-            x = bandpass_filter(x, fs=self.fs)
-            x = normalize(x)
+    def preprocess_all(self, x):
+        processed = []
 
-            processed[ch] = x
+        for sample in x:
+            out = np.zeros_like(sample)
 
-        return processed
+            for ch in range(sample.shape[0]):
+                sig = sample[ch]
+                sig = bandpass_filter(sig, fs=self.fs)
+                out[ch] = sig
+
+            processed.append(out)
+
+        return torch.tensor(np.array(processed), dtype=torch.float32)
 
     def __len__(self):
         return len(self.x)
 
     def __getitem__(self, idx):
-        x = self.x[idx]
-        y = self.y[idx]
-
-        x = self.preprocess(x)
-
-        y = torch.tensor(self.y[idx]).squeeze().long()
-
-        return torch.tensor(x, dtype=torch.float32), y
-
-
-
+        return self.x[idx], self.y[idx]
