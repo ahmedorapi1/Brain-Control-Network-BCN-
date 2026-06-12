@@ -63,13 +63,14 @@ class ATCNet_LSTM(nn.Module):
         )
 
         self.classifier = nn.Sequential(
-            nn.Linear(hidden * 2, 256),
+            nn.Linear(512, 256),
             nn.ELU(),
-            nn.Dropout(0.3),
             nn.Linear(256, 128),
             nn.ELU(),
             nn.Dropout(0.3),
-            nn.Linear(128, num_classes)
+            nn.Linear(128, 64),
+            nn.ELU(),
+            nn.Linear(64, num_classes)
         )
 
     def forward(self, x):
