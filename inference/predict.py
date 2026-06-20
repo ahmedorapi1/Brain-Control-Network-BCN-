@@ -1,30 +1,34 @@
-from ultralytics import YOLO
-from onnxruntime.quantization import quantize_dynamic, QuantType
-import matplotlib.pyplot as plt
 import cv2
+import numpy as np
+from ultralytics import YOLO
 
-model = YOLO(r"D:\GP_data\vision_data\best.pt")
+model = YOLO("vision_model_int8.onnx")
 
-results = model.predict(
-    source="test2.jpg",
-    conf=0.4,
-    show=False
-)
-img = results[0].plot()
+cap = cv2.VideoCapture(0)
 
-plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
-plt.axis("off")
-plt.show()
+if not cap.isOpened():
+    raise Exception("Cannot open webcam")
 
-quantize_dynamic(                      #int8
-    "best.onnx",
-    "best_int8.onnx",
-    weight_type=QuantType.QInt8
-)
+while True:
+    ret, frame = cap.read()
+    if not ret:
+        break
 
-model.export(                      #fp32
-    format="onnx",
-    opset=12,
-    simplify=True,
-    dynamic=True
-)
+    results = model.predict(
+        source=frame,
+        conf=0.4,
+        verbose=False
+    )
+
+    annotated_frame = results[0].plot()
+
+    # Show result
+    cv2.imshow("Vision Model INT8", annotated_frame)
+
+    # Press q to quit
+    key = cv2.waitKey(1) & 0xFF
+    if key == ord('q'):
+        break
+
+cap.release()
+cv2.destroyAllWindows()
