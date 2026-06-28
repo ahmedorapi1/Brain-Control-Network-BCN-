@@ -1,235 +1,61 @@
-🧠 Brain Control Network (BCN)
+# Brain Control Network (BCN)
 
+BCN is an EEG-based Brain-Computer Interface system that enables users to control multiple network-connected devices simultaneously using only brain activity.
 
-Control multiple network-connected devices using only your brain activity.
+The system introduces BCNP, a custom application-layer protocol that allows any compliant device to join the network and be controlled dynamically, without device-specific software or manual pre-configuration.
 
+---
 
+## System Architecture
 
-Show Image
-Show Image
-Show Image
-Show Image
-Show Image
+BCN consists of two main components.
 
+The **EEG Controller** handles signal acquisition from the headset, preprocessing, AI-based classification, and sending commands to devices over the network.
 
-Table of Contents
+**BCNP-Compliant Devices** are any devices that implement the BCNP interface — smart home appliances, robots, computers, or IoT systems. The controller does not need to know how a device works internally; it only communicates through the protocol.
 
+---
 
-Overview
-Demo
-System Architecture
-EEG Paradigms
-AI Models & Results
-Computer Vision Module
-Installation
-Usage
-Project Structure
-Contributing
-Team
-License
+## EEG Paradigms
 
+BCN supports three EEG paradigms.
 
+**Motor Imagery (MI)** — recognition of imagined physical movements such as imagining moving the left or right hand.
 
-Overview
+**Imagined Speech (IS)** — recognition of internally spoken words without physical articulation. BCN uses a constrained vocabulary of digits and control words to keep classification reliable.
 
-Brain Control Network (BCN) is an EEG-based Brain-Computer Interface (BCI) system that enables users to control multiple network-connected devices simultaneously using only brain activity — no physical movement required.
+**Visual Imagery** — mental visualization tasks used as an alternative for users who find MI or IS more difficult.
 
-BCN introduces BCNP, a custom application-layer protocol that allows any compliant device to join the network and be controlled dynamically, without device-specific software or manual pre-configuration.
+The command vocabulary is intentionally kept small. A smaller set of well-separated mental tasks significantly improves classification accuracy and makes the system more practical.
 
-Key Features
+---
 
-FeatureDescription🔌 Multi-device controlControl an arbitrary number of devices from a single EEG session⚡ Zero pre-configurationDevices are discovered and registered at runtime🔄 Dynamic mappingBrain commands can be remapped during a live session👁️ Vision-assisted controlYOLO-based object detection for environment-aware interaction🧩 Device-agnosticAny hardware implementing BCNP can join the network
-
-
-Demo
-
-
-📹 Demo video coming soon — add your demo GIF or YouTube link here.
-
-
-
-[ EEG Headset ] ──► [ Signal Processing ] ──► [ AI Classifier ]
-                                                      │
-                                               [ BCNP Protocol ]
-                                                      │
-                          ┌───────────────────────────┼───────────────────────────┐
-                          ▼                           ▼                           ▼
-                    [ Smart Light ]            [ Robot Arm ]              [ Computer ]
-
-
-System Architecture
-
-BCN consists of two main components:
-
-1. EEG Controller
-
-The brain of the system. Responsible for:
-
-
-EEG signal acquisition from hardware
-Signal preprocessing and feature extraction
-AI-based brain signal classification
-Sending commands to devices via BCNP
-
-
-2. BCNP-Compliant Devices
-
-Any device that implements the BCNP interface can be controlled. Examples:
-
-
-Smart home appliances (lights, fans, TVs)
-Robots and actuators
-Computers and IoT systems
-Assistive technology devices
-
-
-
-EEG Paradigms
-
-BCN supports three EEG paradigms to maximize usability across different users:
-
-🏃 Motor Imagery (MI)
-
-Recognition of imagined physical movements (e.g., imagining moving your left hand vs. right hand). Widely studied and well-supported by existing EEG datasets.
-
-🗣️ Imagined Speech (IS)
-
-Recognition of internally spoken words without physical articulation. BCN uses a constrained vocabulary of digits and control words to keep classification tractable.
-
-👁️ Visual Imagery
-
-Mental visualization tasks used as an alternative paradigm for users who find MI or IS difficult.
-
-
-Design decision: BCN intentionally limits the command vocabulary to a small, well-separated set of mental tasks. A smaller vocabulary significantly improves classification accuracy and makes the system more reliable in practice.
-
-
-
-
-AI Models & Results
+## AI Models and Results
 
 All models were implemented in PyTorch and evaluated on EEG datasets for each classification task.
 
-Models Evaluated
+Models evaluated include CNN, CNN + LSTM, EEGNet, DeepConvNet, ATCNet, and a custom architecture developed specifically for BCN.
 
-ModelTypeCNNSpatial feature extractionCNN + LSTMSpatial + temporal hybridEEGNetGeneral-purpose compact EEG modelDeepConvNetDeep convolutional architectureATCNetAttention-based temporal convolutionBCN ArchitectureCustom architecture developed for this project
+**Motor Imagery** — best accuracy: 54%
 
-Classification Results
+**Digit Classification** — best accuracy: 55.5%. The digit set was reduced from 10 to 4 digits (0, 1, 4, 5), selected because they produce the strongest and most distinguishable EEG signals.
 
-Motor Imagery (MI)
+**Imagined Speech** — best accuracy: 63.3%
 
-MetricValueTaskImagined movement classificationBest Accuracy54%
+---
 
-Digit Classification
+## Computer Vision Module
 
-MetricValueTaskImagined digit recognitionBest Accuracy55.5%Optimized digit set0, 1, 4, 5 — selected for strongest EEG signal separability
+BCN integrates a YOLO-based object detection module that allows the system to identify physical devices in the user's environment, combining brain-driven intent with visual perception.
 
-Imagined Speech (IS)
+The dataset was collected and annotated manually by the team, covering two classes: Television and Fan. These were chosen as representative smart home devices to validate the vision pipeline as a proof of concept.
 
-MetricValueTaskInternally spoken word recognitionBest Accuracy63.3%
+A planned future feature called Device Zero will allow the user to select device 0 via the protocol, which automatically launches the vision module to identify the nearest device — removing the need for manual registration.
 
+---
 
-Note: EEG-based classification is inherently noisy. The accuracies above represent a meaningful signal above chance level for multi-class problems, particularly for a constrained vocabulary operating under real BCI constraints.
+## Team
 
-
-
-
-Computer Vision Module
-
-BCN integrates a YOLO-based object detection module that allows the system to identify physical devices in the user's environment — combining brain-driven intent with visual perception.
-
-Dataset
-
-DetailInfoClassesTelevision, FanAnnotationManual bounding-box annotation (collected and labeled by the team)ModelYOLOv8 fine-tuned on custom dataset
-
-Future: Device Zero
-
-When the user selects Device 0 via the protocol, the vision module launches automatically to identify the nearest device — eliminating manual registration for known device types.
-
-
-Installation
-
-bash# Clone the repository
-git clone https://github.com/ahmedorapi1/Brain-Control-Network-BCN-
-cd Brain-Control-Network-BCN-
-
-# Create a virtual environment
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-Requirements
-
-
-Python 3.8+
-PyTorch 2.0+
-NumPy, SciPy, MNE (EEG processing)
-OpenCV, Ultralytics (Computer Vision)
-See requirements.txt for the full list
-
-
-
-Usage
-
-bash# Run the EEG Controller
-python main.py --mode controller
-
-# Run a simulated BCNP device (for testing)
-python main.py --mode device --name "SmartLight"
-
-# Run the Computer Vision module standalone
-python vision/detect.py --source 0  # 0 = webcam
-
-
-⚠️ Hardware note: A physical EEG headset is required for live sessions. A simulated signal mode is available for development and testing without hardware.
-
-
-
-
-Project Structure
-
-Brain-Control-Network-BCN-/
-│
-├── controller/          # EEG acquisition, preprocessing, classification
-│   ├── acquisition/     # Hardware interface
-│   ├── preprocessing/   # Signal filtering and feature extraction
-│   └── models/          # PyTorch EEG classification models
-│
-├── protocol/            # BCNP implementation
-│
-├── vision/              # YOLO-based object detection module
-│   ├── detect.py
-│   ├── dataset/         # Custom TV + Fan dataset
-│   └── weights/         # Trained model weights
-│
-├── devices/             # Example BCNP-compliant device implementations
-│
-├── notebooks/           # Experiments, model training, and evaluation
-│
-├── requirements.txt
-├── main.py
-└── README.md
-
-
-Contributing
-
-This is a graduation project. The codebase is open for learning and reference.
-
-If you want to build a BCNP-compliant device or extend the AI models, feel free to open an issue or a pull request.
-
-
-Team
-
-NameRoleAhmed Khaled OrapyAI Models, Computer Vision, Data Pipeline[Teammate name][Role][Teammate name][Role]
+Ahmed Khaled Orapy — AI models, computer vision, data pipeline
 
 Supervised by: [Supervisor name, Mansoura University]
-
-
-License
-
-This project is licensed under the MIT License — see LICENSE for details.
-
-
-Brain Control Network — Bridging minds and machines
