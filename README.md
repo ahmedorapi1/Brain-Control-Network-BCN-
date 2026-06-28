@@ -53,12 +53,13 @@ The dataset was collected and annotated manually by the team, covering two class
 A planned future feature called Device Zero will allow the user to select device 0 via the protocol, which automatically launches the vision module to identify the nearest device — removing the need for manual registration.
 
 ---
+
+## Team
 Mohamed Salah El-Din – Team Leader and responsible for the communication protocol.
--- Ahmed Khaled Orabi – Responsible for AI models, Computer Vision, and the Data Pipeline.
+Ahmed Khaled Oraby – Responsible for AI models, Computer Vision, and the Data Pipeline.
 Ahmed Osama – Responsible for Hardware Development.
 Karam Youssef – Responsible for the Image-to-Speech Model.
 Omar Ali – Responsible for Data Collection
 
-## Team
 
-Ahmed Khaled Orapy — AI m
+
