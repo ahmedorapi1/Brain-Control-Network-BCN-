@@ -36,7 +36,7 @@ All models were implemented in PyTorch and evaluated on EEG datasets for each cl
 
 Models evaluated include CNN, CNN + LSTM, EEGNet, DeepConvNet, ATCNet, and a custom architecture developed specifically for BCN.
 
-**Motor Imagery** — best accuracy: 54%
+**Motor Imagery** — best accuracy: 56.67%
 
 **Digit Classification** — best accuracy: 55.5%. The digit set was reduced from 10 to 4 digits (0, 1, 4, 5), selected because they produce the strongest and most distinguishable EEG signals.
 
