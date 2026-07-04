@@ -42,6 +42,12 @@ Models evaluated include CNN, CNN + LSTM, EEGNet, DeepConvNet, ATCNet, and a cus
 
 **Imagined Speech** — best accuracy: 63.3%
 
+### Channel Attention Enhancement
+
+The custom architecture was extended with a lightweight Channel Attention module, implemented in PyTorch and placed before the spatial convolution layer. Instead of relying on manual channel selection, the module learns the importance of each EEG channel directly during training, computing attention weights across all channels and reweighting them adaptively. This allows the network to emphasize informative channels and suppress less relevant ones while still preserving information from all EEG electrodes.
+
+With this addition, Motor Imagery accuracy improved from 51.7% to 56.67% (**+4.97 percentage points**).
+
 ---
 
 ## Computer Vision Module
@@ -61,7 +67,7 @@ Ahmed Khaled Oraby – Responsible for AI models, Computer Vision, and the Data 
 
 Ahmed Osama – Responsible for Hardware Development.
 
-Karam Youssef – Responsible for the Image-to-Speech Model.
+Kirellos Youssef – Responsible for the Image-to-Speech Model.
 
 Omar Ali – Responsible for Data Collection
 
